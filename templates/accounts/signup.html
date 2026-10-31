@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Sign up{% endblock %}
+{% block content %}
+<section class="section form-narrow">
+  <h1>Create your account</h1>
+  <p class="muted">Choose <strong>Customer</strong> to book slots, or <strong>Business Owner</strong> to list your business.</p>
+  <form method="post" novalidate>{% csrf_token %}
+    {{ form.as_p }}
+    <button class="btn" type="submit">Sign up</button>
+  </form>
+  <p>Already have an account? <a href="{% url 'accounts:login' %}">Log in</a></p>
+</section>
+{% endblock %}

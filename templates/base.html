@@ -1,0 +1,82 @@
+{% load static %}<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{{ SITE_NAME }}{% endblock %} | {{ SITE_NAME }}</title>
+  <!-- Set the saved dark/light theme before the page draws (no flash). -->
+  <script>try{var t=localStorage.getItem("theme");if(t){document.documentElement.setAttribute("data-theme",t)}}catch(e){}</script>
+  <link rel="stylesheet" href="{% static 'css/colors.css' %}">
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <link rel="stylesheet" href="{% static 'css/print.css' %}" media="print">
+  <script src="{% static 'js/main.js' %}" defer></script>
+</head>
+<body>
+  <div id="page-loader" aria-hidden="true"><span class="spinner"></span></div>
+  <div id="scroll-progress" aria-hidden="true"></div>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand-link" href="{% url 'home' %}">{{ SITE_NAME }}</a>
+      <button id="menu-toggle" class="icon-btn" aria-expanded="false" aria-controls="site-nav">Menu</button>
+      <nav id="site-nav" class="site-nav" aria-label="Main">
+        <a href="{% url 'home' %}">Home</a>
+        <a href="{% url 'business_list' %}">Businesses</a>
+        {% if user.is_authenticated %}
+          {% if user.profile.role == 'owner' %}<a href="{% url 'owner_dashboard' %}">Dashboard</a>
+          {% else %}<a href="{% url 'my_bookings' %}">My bookings</a>{% endif %}
+          {% if user.is_staff %}<a href="{% url 'admin:index' %}">Admin</a>{% endif %}
+        {% endif %}
+        <a href="{% url 'contact' %}">Contact</a>
+        <!-- Site search -->
+        <form class="search-form" action="{% url 'business_list' %}" method="get" role="search">
+          <input type="search" name="q" placeholder="Search businesses" aria-label="Search businesses" value="{{ request.GET.q }}">
+          <button class="btn small" type="submit">Go</button>
+        </form>
+        {% if user.is_authenticated %}
+          <form class="nav-form" action="{% url 'accounts:logout' %}" method="post">{% csrf_token %}
+            <button class="btn secondary small" type="submit">Log out ({{ user.username }})</button></form>
+        {% else %}
+          <a href="{% url 'accounts:login' %}">Log in</a>
+          <a class="btn small" href="{% url 'accounts:signup' %}">Sign up</a>
+        {% endif %}
+        <button id="theme-toggle" class="icon-btn" type="button" aria-label="Switch dark or light mode">Dark</button>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" class="container">
+    {% if messages %}
+      <ul class="messages" role="status">
+        {% for message in messages %}<li class="message {{ message.tags }}">{{ message }}</li>{% endfor %}
+      </ul>
+    {% endif %}
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <span>&copy; {{ SITE_NAME }}. All rights reserved.</span>
+      <span class="muted">Last updated: {{ SITE_LAST_UPDATED }}</span>
+    </div>
+  </footer>
+
+  <a id="contact-fab" class="btn fab" href="{% url 'contact' %}">Contact us</a>
+  <button id="back-to-top" class="btn fab" type="button" aria-label="Back to top">&uarr;</button>
+
+  <div id="cookie-banner" role="dialog" aria-label="Cookie notice">
+    <p>We use cookies to keep you logged in and to remember your settings.</p>
+    <button class="btn small" data-cookie="accepted" type="button">OK, got it</button>
+  </div>
+
+  <!-- Confirmation modal used by forms with class "js-confirm" -->
+  <dialog id="confirm-dialog" aria-labelledby="confirm-text">
+    <p id="confirm-text">Are you sure?</p>
+    <div class="dialog-actions">
+      <button id="confirm-no" class="btn secondary small" type="button">No, go back</button>
+      <button id="confirm-yes" class="btn small" type="button">Yes, continue</button>
+    </div>
+  </dialog>
+</body>
+</html>

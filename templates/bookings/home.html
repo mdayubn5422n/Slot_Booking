@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}Book appointments online{% endblock %}
+{% block content %}
+{# Main banner. The image is uploaded by the admin: Admin > Site images > "Home page - main banner". #}
+<section class="hero {% if not images.home_hero %}no-image{% endif %}"
+  {% if images.home_hero %}style="background-image:url('{{ images.home_hero.image.url }}')" role="img" aria-label="{{ images.home_hero.alt_text }}"{% endif %}>
+  <div class="container">
+    <h1>Book your next appointment in a few clicks</h1>
+    <p>Salons, clinics, tutors, gyms, photographers and pet groomers - all in one place.</p>
+    <form class="search-form" action="{% url 'business_list' %}" method="get" role="search" style="max-width:480px">
+      <input type="search" name="q" placeholder="What are you looking for?" aria-label="Search businesses">
+      <button class="btn" type="submit">Search</button>
+    </form>
+  </div>
+</section>
+
+  <section class="section">
+    <h2>Browse by category</h2>
+    <div class="grid">
+      {% for c in categories %}
+      <article class="card reveal">
+        <a class="stretch" href="{% url 'business_list' %}?category={{ c.slug }}">
+          {% if c.image %}<img src="{{ c.image.url }}" alt="{{ c.name }}" loading="lazy">
+          {% else %}<div class="img-placeholder">No image yet</div>{% endif %}
+          <div class="card-body"><h3>{{ c.name }}</h3><p class="muted">{{ c.description }}</p></div>
+        </a>
+      </article>
+      {% empty %}<p class="muted">No categories yet. The admin can add them in the Admin area.</p>{% endfor %}
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>Featured businesses</h2>
+    <div class="grid">
+      {% for b in featured %}{% include "bookings/_business_card.html" %}
+      {% empty %}<p class="muted">No businesses have joined yet.</p>{% endfor %}
+    </div>
+  </section>
+
+  <section class="section two-col reveal">
+    <div>
+      <h2>Why SlotBook?</h2>
+      <p>See real free times, book in seconds and get a clear confirmation. Business owners manage services,
+         working hours and bookings from one simple dashboard.</p>
+      <a class="btn" href="{% url 'accounts:signup' %}">Get started</a>
+    </div>
+    {% if images.home_about %}<img class="about-img" src="{{ images.home_about.image.url }}" alt="{{ images.home_about.alt_text }}" loading="lazy">
+    {% else %}<div class="img-placeholder about-img">Upload "Home page - about section" in Admin</div>{% endif %}
+  </section>
+
+  <section class="section">
+    <h2>Frequently asked questions</h2>
+    {% for f in faqs %}
+    <details class="faq reveal"><summary>{{ f.question }}</summary><div class="answer">{{ f.answer|linebreaksbr }}</div></details>
+    {% empty %}<p class="muted">No FAQs yet.</p>{% endfor %}
+  </section>
+{% endblock %}

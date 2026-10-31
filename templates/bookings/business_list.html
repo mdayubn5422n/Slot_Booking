@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Businesses{% endblock %}
+{% block content %}
+<section class="section">
+  <h1>Find a business</h1>
+  <form class="inline-form panel" method="get">
+    <div><label for="q">Search</label><input id="q" type="search" name="q" value="{{ query }}" placeholder="Name, place or type"></div>
+    <div><label for="category">Category</label>
+      <select id="category" name="category">
+        <option value="">All categories</option>
+        {% for c in categories %}<option value="{{ c.slug }}" {% if c.slug == category_slug %}selected{% endif %}>{{ c.name }}</option>{% endfor %}
+      </select></div>
+    <div><button class="btn" type="submit">Search</button></div>
+  </form>
+
+  <div class="grid">
+    {% for b in page %}{% include "bookings/_business_card.html" %}
+    {% empty %}<p class="muted">No businesses found. Try a different search.</p>{% endfor %}
+  </div>
+
+  {% if page.has_other_pages %}
+  <p class="center" style="margin-top:1.5rem">
+    {% if page.has_previous %}<a class="btn secondary small" href="?q={{ query|urlencode }}&category={{ category_slug }}&page={{ page.previous_page_number }}">Previous</a>{% endif %}
+    Page {{ page.number }} of {{ page.paginator.num_pages }}
+    {% if page.has_next %}<a class="btn secondary small" href="?q={{ query|urlencode }}&category={{ category_slug }}&page={{ page.next_page_number }}">Next</a>{% endif %}
+  </p>
+  {% endif %}
+</section>
+{% endblock %}

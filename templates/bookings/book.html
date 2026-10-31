@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Book {{ business.name }}{% endblock %}
+{% block content %}
+<section class="section form-narrow" style="max-width:640px">
+  <h1>Book: {{ business.name }}</h1>
+
+  {# Step 1: choose a service and a date #}
+  <form method="get" class="panel">
+    <h2>1. Choose service and date</h2>
+    <p><label for="service">Service</label>
+      <select id="service" name="service" required>
+        <option value="">Select a service</option>
+        {% for s in services %}<option value="{{ s.pk }}" {% if service and service.pk == s.pk %}selected{% endif %}>{{ s.name }} ({{ s.duration_minutes }} min, {{ s.price }})</option>{% endfor %}
+      </select></p>
+    <p><label for="date">Date</label>
+      <input id="date" type="date" name="date" min="{{ min_date|date:'Y-m-d' }}" max="{{ max_date|date:'Y-m-d' }}" value="{{ day|date:'Y-m-d' }}" required></p>
+    <button class="btn secondary" type="submit">Show free times</button>
+  </form>
+
+  {# Step 2: choose a free time #}
+  {% if searched %}
+  <form method="post" class="panel">{% csrf_token %}
+    <h2>2. Choose a time on {{ day|date:"l, j F Y" }}</h2>
+    <input type="hidden" name="service" value="{{ service.pk }}">
+    <input type="hidden" name="date" value="{{ day|date:'Y-m-d' }}">
+    {% if slots %}
+      <div class="slots" role="radiogroup" aria-label="Free times">
+        {% for s in slots %}<label class="slot"><input type="radio" name="slot" value="{{ s|time:'H:i' }}" required><span>{{ s|time:"H:i" }}</span></label>{% endfor %}
+      </div>
+      <p><label for="note">Note for the business (optional)</label><input id="note" name="note" maxlength="300"></p>
+      <button class="btn" type="submit">Confirm booking</button>
+    {% else %}
+      <p class="muted">No free times on this date. Please try another date.</p>
+    {% endif %}
+  </form>
+  {% endif %}
+</section>
+{% endblock %}

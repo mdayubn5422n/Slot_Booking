@@ -1,0 +1,11 @@
+<article class="card reveal">
+  <a class="stretch" href="{% url 'business_detail' b.slug %}">
+    {% if b.image %}<img src="{{ b.image.url }}" alt="{{ b.name }}" loading="lazy">
+    {% else %}<div class="img-placeholder">No image yet</div>{% endif %}
+    <div class="card-body">
+      <span class="badge">{{ b.category.name }}</span>
+      <h3>{{ b.name }}</h3>
+      <p class="muted">{{ b.address|default:"Address not added yet" }}</p>
+    </div>
+  </a>
+</article>

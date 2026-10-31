@@ -1,0 +1,40 @@
+/* ==========================================================
+   COLOUR SETTINGS - to change the look of the whole site,
+   edit ONLY the two colours on lines 6 and 7 below.
+   ========================================================== */
+:root {
+  --brand: #014BAA;   /* MAIN colour: royal blue (buttons, links, header) */
+  --cream: #F8F3F0;   /* BACKGROUND colour: light cream */
+
+  /* Colours below are made from the two colours above. */
+  --bg: var(--cream);
+  --surface: color-mix(in srgb, var(--cream) 40%, white);
+  --text: color-mix(in srgb, var(--brand) 25%, black);
+  --muted: color-mix(in srgb, var(--text) 65%, var(--cream));
+  --border: color-mix(in srgb, var(--brand) 18%, var(--cream));
+  --primary: var(--brand);
+  --primary-text: var(--cream);
+  --primary-hover: color-mix(in srgb, var(--brand) 85%, black);
+  --soft: color-mix(in srgb, var(--brand) 8%, var(--cream));
+
+  /* Status colours (success / error / warning messages). */
+  --success: #1b7f45;
+  --danger: #b3261e;
+  --warning: #9a6700;
+}
+
+/* Dark mode: also made from your two colours. */
+[data-theme="dark"] {
+  --bg: color-mix(in srgb, var(--brand) 22%, black);
+  --surface: color-mix(in srgb, var(--brand) 30%, black);
+  --text: var(--cream);
+  --muted: color-mix(in srgb, var(--cream) 70%, var(--brand));
+  --border: color-mix(in srgb, var(--brand) 55%, black);
+  --primary: color-mix(in srgb, var(--brand) 60%, white);
+  --primary-text: color-mix(in srgb, var(--brand) 25%, black);
+  --primary-hover: color-mix(in srgb, var(--brand) 40%, white);
+  --soft: color-mix(in srgb, var(--brand) 40%, black);
+  --success: #5fd08a;
+  --danger: #ff8a80;
+  --warning: #f0c35a;
+}

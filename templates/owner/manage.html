@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}Manage {{ business.name }}{% endblock %}
+{% block content %}
+<section class="section">
+  <h1>{{ business.name }}</h1>
+  <p><a class="btn secondary small" href="{% url 'owner_dashboard' %}">All businesses</a>
+     <a class="btn secondary small" href="{% url 'business_edit' business.slug %}">Edit details / image</a>
+     <a class="btn secondary small" href="{% url 'business_detail' business.slug %}">View public page</a></p>
+
+  <div class="two-col">
+    <div class="panel"><h2>Services</h2>
+      {% for s in services %}
+      <div class="inline-form" style="margin-bottom:.5rem"><span>{{ s.name }} - {{ s.duration_minutes }} min - {{ s.price }}</span>
+        <form class="nav-form js-confirm" method="post" action="{% url 'service_delete' s.pk %}" data-confirm="Delete the service {{ s.name }}?">{% csrf_token %}
+          <button class="btn danger small" type="submit">Delete</button></form></div>
+      {% empty %}<p class="muted">No services yet.</p>{% endfor %}
+      <form method="post" action="{% url 'service_add' business.slug %}">{% csrf_token %}
+        {{ service_form.as_p }}<button class="btn small" type="submit">Add service</button></form>
+    </div>
+
+    <div class="panel"><h2>Working hours</h2>
+      {% for h in hours %}
+      <div class="inline-form" style="margin-bottom:.5rem"><span>{{ h.get_weekday_display }}: {{ h.open_time|time:"H:i" }} - {{ h.close_time|time:"H:i" }}</span>
+        <form class="nav-form js-confirm" method="post" action="{% url 'hours_delete' h.pk %}" data-confirm="Remove these working hours?">{% csrf_token %}
+          <button class="btn danger small" type="submit">Remove</button></form></div>
+      {% empty %}<p class="muted">No hours yet. Customers cannot book until you add hours.</p>{% endfor %}
+      <form method="post" action="{% url 'hours_add' business.slug %}">{% csrf_token %}
+        {{ hours_form.as_p }}<button class="btn small" type="submit">Save hours for this day</button></form>
+    </div>
+  </div>
+
+  <h2>Bookings</h2>
+  <p>Filter:
+    <a href="{% url 'manage' business.slug %}">All</a>
+    {% for value, label in statuses %} | <a href="?status={{ value }}">{{ label }}</a>{% endfor %}</p>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Ref</th><th>Customer</th><th>Service</th><th>When</th><th>Status</th><th>Actions</th></tr></thead>
+    <tbody>
+    {% for b in bookings %}
+      <tr><td>{{ b.reference }}</td><td>{{ b.customer.username }}</td><td>{{ b.service.name }}</td>
+        <td>{{ b.date|date:"j M Y" }}, {{ b.start_time|time:"H:i" }}</td>
+        <td><span class="badge {{ b.status }}">{{ b.get_status_display }}</span></td>
+        <td>
+          {% if b.status == 'pending' %}
+          <form class="nav-form" method="post" action="{% url 'booking_status' b.reference %}">{% csrf_token %}
+            <input type="hidden" name="action" value="confirm"><button class="btn small" type="submit">Confirm</button></form>{% endif %}
+          {% if b.status == 'confirmed' %}
+          <form class="nav-form" method="post" action="{% url 'booking_status' b.reference %}">{% csrf_token %}
+            <input type="hidden" name="action" value="complete"><button class="btn secondary small" type="submit">Complete</button></form>{% endif %}
+          {% if b.status == 'pending' or b.status == 'confirmed' %}
+          <form class="nav-form js-confirm" method="post" action="{% url 'booking_status' b.reference %}" data-confirm="Cancel booking {{ b.reference }}?">{% csrf_token %}
+            <input type="hidden" name="action" value="cancel"><button class="btn danger small" type="submit">Cancel</button></form>{% endif %}
+        </td></tr>
+    {% empty %}<tr><td colspan="6" class="muted">No bookings yet.</td></tr>{% endfor %}
+    </tbody></table></div>
+</section>
+{% endblock %}

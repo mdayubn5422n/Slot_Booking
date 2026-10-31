@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}{% if business %}Edit{% else %}Add{% endif %} business{% endblock %}
+{% block content %}
+<section class="section form-narrow" style="max-width:600px">
+  <h1>{% if business %}Edit {{ business.name }}{% else %}Add a business{% endif %}</h1>
+  {# enctype is needed so the image file can be uploaded #}
+  <form method="post" enctype="multipart/form-data" novalidate>{% csrf_token %}
+    {{ form.as_p }}
+    <button class="btn" type="submit">Save</button>
+    <a class="btn secondary" href="{% url 'owner_dashboard' %}">Back</a>
+  </form>
+</section>
+{% endblock %}

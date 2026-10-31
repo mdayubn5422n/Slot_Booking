@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Owner dashboard{% endblock %}
+{% block content %}
+<section class="section">
+  <h1>My businesses</h1>
+  <p><a class="btn" href="{% url 'business_create' %}">Add a business</a></p>
+  <div class="grid">
+    {% for b in businesses %}
+    <article class="card reveal"><div class="card-body">
+      <span class="badge">{{ b.category.name }}</span>
+      <h3>{{ b.name }}</h3>
+      <p class="muted">{% if b.is_active %}Visible to customers{% else %}Hidden{% endif %} - {{ b.pending }} pending booking{{ b.pending|pluralize }}</p>
+      <a class="btn small" href="{% url 'manage' b.slug %}">Manage</a>
+      <a class="btn secondary small" href="{% url 'business_edit' b.slug %}">Edit details</a>
+    </div></article>
+    {% empty %}<p class="muted">You have not added a business yet. Press "Add a business" to start.</p>{% endfor %}
+  </div>
+</section>
+{% endblock %}

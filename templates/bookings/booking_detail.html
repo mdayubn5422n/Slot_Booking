@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Booking {{ booking.reference }}{% endblock %}
+{% block content %}
+<section class="section form-narrow" style="max-width:600px">
+  <h1>Booking details</h1>
+  <div class="panel">
+    <p>Reference: <strong>{{ booking.reference }}</strong>
+      <button class="btn secondary small no-print" type="button" data-copy="{{ booking.reference }}">Copy</button></p>
+    <p>Status: <span class="badge {{ booking.status }}">{{ booking.get_status_display }}</span></p>
+    <p><strong>{{ booking.business.name }}</strong><br>{{ booking.business.address }}<br>{{ booking.business.phone }}</p>
+    <p>Service: {{ booking.service.name }} ({{ booking.service.price }})<br>
+       Date: {{ booking.date|date:"l, j F Y" }}<br>
+       Time: {{ booking.start_time|time:"H:i" }} - {{ booking.end_time|time:"H:i" }}</p>
+    {% if booking.note %}<p>Note: {{ booking.note }}</p>{% endif %}
+    <p class="muted">Booked on {{ booking.created_at|date:"j M Y, H:i" }}</p>
+  </div>
+  <p class="no-print">
+    <button class="btn" type="button" data-print>Print</button>
+    {% if user == booking.customer %}<a class="btn secondary" href="{% url 'my_bookings' %}">My bookings</a>{% endif %}
+  </p>
+</section>
+{% endblock %}

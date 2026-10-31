@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}{{ business.name }}{% endblock %}
+{% block content %}
+<section class="section two-col">
+  <div class="reveal">
+    {% if business.image %}<img class="about-img" src="{{ business.image.url }}" alt="{{ business.name }}">
+    {% else %}<div class="img-placeholder about-img">No image yet</div>{% endif %}
+  </div>
+  <div class="reveal">
+    <span class="badge">{{ business.category.name }}</span>
+    <h1>{{ business.name }}</h1>
+    <p>{{ business.description|linebreaksbr }}</p>
+    <p><strong>Address:</strong> {{ business.address|default:"-" }}<br>
+       <strong>Phone:</strong> {{ business.phone|default:"-" }}
+       {% if business.phone %}<button class="btn secondary small" type="button" data-copy="{{ business.phone }}">Copy</button>{% endif %}</p>
+    <p><a class="btn" href="{% url 'book' business.slug %}">Book now</a>
+       <button class="btn secondary" type="button" data-copy="page-url">Copy page link</button></p>
+  </div>
+</section>
+
+<section class="two-col">
+  <div class="panel reveal"><h2>Services</h2>
+    {% for s in services %}<p><strong>{{ s.name }}</strong> - {{ s.duration_minutes }} min - {{ s.price }}</p>
+    {% empty %}<p class="muted">No services added yet.</p>{% endfor %}
+  </div>
+  <div class="panel reveal"><h2>Opening hours</h2>
+    {% for h in hours %}<p>{{ h.get_weekday_display }}: {{ h.open_time|time:"H:i" }} - {{ h.close_time|time:"H:i" }}</p>
+    {% empty %}<p class="muted">Opening hours not added yet.</p>{% endfor %}
+  </div>
+</section>
+{% endblock %}

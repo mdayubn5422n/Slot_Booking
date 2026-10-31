@@ -1,0 +1,6 @@
+/* Print stylesheet: used only when printing a page (for example a booking confirmation). */
+.site-header, .site-footer, .fab, #cookie-banner, #page-loader, #scroll-progress, .no-print, .skip-link, dialog { display: none !important; }
+body { background: #fff !important; color: #000 !important; font-size: 12pt; }
+.panel, .card { border: 1px solid #999 !important; box-shadow: none !important; background: #fff !important; }
+a { color: #000 !important; text-decoration: none; }
+.reveal { opacity: 1 !important; transform: none !important; }
